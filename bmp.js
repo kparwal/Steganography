@@ -12,8 +12,17 @@ function processimage(e) {
   var bitmap = getBMP(buffer);
 }
 
+function toArrayBuffer(buffer) {
+    var ab = new ArrayBuffer(buffer.length);
+    var view = new Uint8Array(ab);
+    for (var i = 0; i < buffer.length; ++i) {
+        view[i] = buffer[i];
+    }
+    return ab;
+}
+
 function getBMP(buffer) {
-  var datav = new DataView(buffer);
+  var datav = new DataView(toArrayBuffer(buffer));
   var bitmap = {};
 
   bitmap.fileheader = {};
@@ -39,6 +48,5 @@ function getBMP(buffer) {
   var start = bitmap.fileheader.bfOffBits;
   bitmap.stride = Math.floor((bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32) * 4;
   bitmap.pixels = new Uint8Array(buffer, start);
-  debugger;
   return bitmap;
 }

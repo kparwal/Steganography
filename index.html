@@ -40,8 +40,10 @@
 <div>
   <img id="output">
 </div>
+<script type="text/javascript" src="bmp.js"></script>
 
 <script>
+var fs = require('fs');
 var holder = document.getElementById('border-graphic');
 holder.ondragover = function () {
   return false;
@@ -54,9 +56,15 @@ holder.ondrop = function (e) {
   var file = e.dataTransfer.files[0];
 
   console.log('File you dragged here is', file.path);
+  fs.readFile(file.path, function(err, data){
+    if (err) {
+      console.log(err);
+      return;
+    }
+    var raw_image = getBMP(data);
+    debugger;
+  });
   return false;
 };
 </script>
-<script type="text/javascript" src="js/write_file.js"></script>
-<script type="text/javascript" src="node_modules\bootstrap\js\dropdown.js"></script>
 </html>
