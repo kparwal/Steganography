@@ -1,4 +1,54 @@
+function binaryToWords(str) {
+  if(str.match(/[10]{8}/g)){
+    var wordFromBinary = str.match(/([10]{8}|\s+)/g).map(function(fromBinary){
+      return String.fromCharCode(parseInt(fromBinary, 2) );
+    }).join('');
+    return console.log(wordFromBinary);
+  }
+}
 
+function toBin(str){
+  var i,j,d;
+  var arr = [];
+  var len = str.length;
+  for (i = 1; i<=len; i++){
+    //reverse so its like a stack
+    d = str.charCodeAt(len-i);
+    for (j = 0; j < 8; j++) {
+      arr.push(d%2);
+      d = Math.floor(d/2);
+    }
+  }
+  //reverse all bits again.
+  return arr.reverse().join("");
+}
+
+function bmp_decode(data) {
+  return getBMP(data);
+}
+
+function bmp_pack_message(raw, message) {
+
+  var pixel, a, r, g, b;
+  var encoded_message = toBin(message);
+  //while (encoded_message.length > 0) {
+  //
+  //}
+
+  for (var i = 0; i < raw.pixels.length; i++) {
+    pixel = raw.pixels[i];
+    a = (pixel & 0xf000) >>> 12;
+    r = (pixel & 0x0f00) >>> 8;
+    g = (pixel & 0x00f0) >>> 4;
+    b = (pixel & 0x000f) >>> 0;
+
+  }
+}
+
+
+function bmp_encode() {
+
+}
 
 function handleFiles(e) {
   var file = e.target.files[0];
@@ -13,12 +63,12 @@ function processimage(e) {
 }
 
 function toArrayBuffer(buffer) {
-    var ab = new ArrayBuffer(buffer.length);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buffer.length; ++i) {
-        view[i] = buffer[i];
-    }
-    return ab;
+  var ab = new ArrayBuffer(buffer.length);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buffer.length; ++i) {
+    view[i] = buffer[i];
+  }
+  return ab;
 }
 
 function getBMP(buffer) {
@@ -47,6 +97,8 @@ function getBMP(buffer) {
 
   var start = bitmap.fileheader.bfOffBits;
   bitmap.stride = Math.floor((bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32) * 4;
-  bitmap.pixels = new Uint8Array(buffer, start);
+  bitmap.pixels = new Uint8Array(buffer);
+  bitmap.pixels = bitmap.pixels.slice(start);
+
   return bitmap;
 }

@@ -7,7 +7,7 @@
   <title>Steganography by MacroHard</title>
 </head>
 <body>
-  <h1 id="titlebar">Drop a BMP file</h1>
+<h1 id="titlebar">Drop a BMP file</h1>
 
 </body>
 <div class="col-6-lg container-fluid">
@@ -19,18 +19,18 @@
 </div>
 
 <div class="col-6-lg container-fluid">
- <div id="message-area" class="form-group">
-  <div class="row" style="margin:auto" id="dropdown-label">
-    <label for="comment">Your message:</label>
-    <select name="cars">
-      <option value="Text">Text</option>
-      <option value="Picture">Picture</option>
-      <option value="Music">Music</option>
-      <option value="Video">Video</option>
-    </select>
+  <div id="message-area" class="form-group">
+    <div class="row" style="margin:auto" id="dropdown-label">
+      <label for="message">Your message:</label>
+      <select name="cars">
+        <option value="Text">Text</option>
+        <option value="Picture">Picture</option>
+        <option value="Music">Music</option>
+        <option value="Video">Video</option>
+      </select>
+    </div>
+    <textarea class="form-control" rows="5" id="message"></textarea>
   </div>
-  <textarea class="form-control" rows="5" id="comment"></textarea>
-</div>
 </div>
 
 <div id="encrypt-button-container" class="fluid-container">
@@ -43,28 +43,42 @@
 <script type="text/javascript" src="bmp.js"></script>
 
 <script>
-var fs = require('fs');
-var holder = document.getElementById('border-graphic');
-holder.ondragover = function () {
-  return false;
-};
-holder.ondragleave = holder.ondragend = function () {
-  return false;
-};
-holder.ondrop = function (e) {
-  e.preventDefault();
-  var file = e.dataTransfer.files[0];
+  var fs = require('fs');
+  var holder = document.getElementById('border-graphic');
+  holder.ondragover = function () {
+    return false;
+  };
+  holder.ondragleave = holder.ondragend = function () {
+    return false;
+  };
+  holder.ondrop = function (e) {
+    e.preventDefault();
+    file = e.dataTransfer.files[0];
 
-  console.log('File you dragged here is', file.path);
-  fs.readFile(file.path, function(err, data){
-    if (err) {
-      console.log(err);
-      return;
-    }
-    var raw_image = getBMP(data);
-    debugger;
-  });
-  return false;
-};
+    var button = document.getElementById('encrypt-button');
+    button.addEventListener('click', fs.readFile(file.path, function (err, data) {
+
+          if (err) {
+            console.log(err);
+            return;
+          }
+
+          var raw;
+          var message = document.getElementById('message').value;
+
+          switch (file.type) {
+            case "image/bmp":
+              raw = bmp_decode(data);
+              image = bmp_pack_message(raw, message);
+              bmp_encode();
+              break;
+            default:
+              break;
+          }
+        })
+    );
+
+    return false;
+  };
 </script>
 </html>
