@@ -10,8 +10,8 @@
 
 <script>
 
-  var inputElement = document.getElementById("input");
-  inputElement.addEventListener("change", handleFiles, false);
+//  var inputElement = document.getElementById("input");
+//  inputElement.addEventListener("change", handleFiles, false);
 
   function handleFiles(e) {
     var file = e.target.files[0];
@@ -23,8 +23,6 @@
   function processimage(e) {
     var buffer = e.target.result;
     var bitmap = getBMP(buffer);
-    var imageData = convertToImageData(bitmap);
-    ctx1.putImageData(imageData, 0, 0);
   }
 
   function getBMP(buffer) {
@@ -54,37 +52,8 @@
     var start = bitmap.fileheader.bfOffBits;
     bitmap.stride = Math.floor((bitmap.infoheader.biBitCount * bitmap.infoheader.biWidth + 31) / 32) * 4;
     bitmap.pixels = new Uint8Array(buffer, start);
-    return bitmap;
-  }
-
-  function convertToImageData(bitmap) {
-    canvas = document.createElement("canvas");
-    var ctx = canvas.getContext("2d");
-    var Width = bitmap.infoheader.biWidth;
-    var Height = bitmap.infoheader.biHeight;
-    var imageData = ctx.createImageData(Width, Height);
-
-    var data = imageData.data;
-    var bmpdata = bitmap.pixels;
-    var stride = bitmap.stride;
-
-    for (var y = 0; y < Height; ++y) {
-      for (var x = 0; x < Width; ++x) {
-        var index1 = (x + Width * (Height - y)) * 4;
-        var index2 = x * 3 + stride * y;
-        data[index1] = bmpdata[index2 + 2];
-        data[index1 + 1] = bmpdata[index2 + 1];
-        data[index1 + 2] = bmpdata[index2];
-        data[index1 + 3] = 255;
-      }
-    }
-
-//    var img = document.createElement("img");
-//    img.src = "typo3conf/ext/ori_proyectos/res/images/interes.png";
-//
-//    document.appendChild(img);
     debugger;
-    return imageData;
+    return bitmap;
   }
 
 
