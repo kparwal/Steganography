@@ -1,0 +1,29 @@
+body {
+	background-color: LightGray;
+}
+
+#titlebar {
+	text-align: center;
+}
+
+#holder {
+	text-align: center;
+	font-size: 20px;
+	color: DarkGray;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+#border-graphic {
+	border-style: dashed;
+	border-color: DarkGray;
+	border-width: 5px;
+	border-radius:5px;
+	margin: 30px;
+	margin-bottom: 5px;
+	max-height: 200px;
+}
+
+#message-area {
+	margin: 30px;
+}
