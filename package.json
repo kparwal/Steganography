@@ -1,5 +1,5 @@
 {
-  "name"    : "Steno",
+  "name"    : "Steganography",
   "version" : "0.1.0",
-  "main"    : "js/main.js"
+  "main"    : "main.js"
 }
