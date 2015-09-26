@@ -1,49 +1,62 @@
 <!DOCTYPE html>
 <html>
-  <link rel="stylesheet" type="text/css" href="node_modules\bootstrap\dist\css\bootstrap.css">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <head>
-    <meta charset="UTF-8">
-    <title>Steganography by MacroHard</title>
-  </head>
-  <body>
-    <h1 id="titlebar">Drop a BMP file</h1>
+<link rel="stylesheet" type="text/css" href="node_modules\bootstrap\dist\css\bootstrap.css">
+<link rel="stylesheet" type="text/css" href="styles.css">
+<head>
+  <meta charset="UTF-8">
+  <title>Steganography by MacroHard</title>
+</head>
+<body>
+  <h1 id="titlebar">Drop a BMP file</h1>
 
-  </body>
-  <div class="col-6-lg container-fluid">
-    <div id="border-graphic">
-      <div id="holder">
+</body>
+<div class="col-6-lg container-fluid">
+  <div id="border-graphic">
+    <div id="holder">
       Drag your file here
-      </div>
     </div>
   </div>
+</div>
 
-  <div class="col-6-lg container-fluid">
-     <div id="message-area" class="form-group">
-      <label for="comment">Your message:</label>
-      <textarea class="form-control" rows="5" id="comment"></textarea>
-    </div>
+<div class="col-6-lg container-fluid">
+ <div id="message-area" class="form-group">
+  <div class="row" style="margin:auto" id="dropdown-label">
+    <label for="comment">Your message:</label>
+    <select name="cars">
+      <option value="Text">Text</option>
+      <option value="Picture">Picture</option>
+      <option value="Music">Music</option>
+      <option value="Video">Video</option>
+    </select>
   </div>
+  <textarea class="form-control" rows="5" id="comment"></textarea>
+</div>
+</div>
 
-  <div>
-    <img id="output">
-  </div>
+<div id="encrypt-button-container" class="fluid-container">
+  <button type="button" class="btn btn-success" id="encrypt-button">Encrypt!</button>
+</div>
 
-  <script>
-    var holder = document.getElementById('border-graphic');
-    holder.ondragover = function () {
-      return false;
-    };
-    holder.ondragleave = holder.ondragend = function () {
-      return false;
-    };
-    holder.ondrop = function (e) {
-      e.preventDefault();
-      var file = e.dataTransfer.files[0];
+<div>
+  <img id="output">
+</div>
 
-      console.log('File you dragged here is', file.path);
-      return false;
-    };
-  </script>
-  <script type="text/javascript" src="js/write_file.js"></script>
+<script>
+var holder = document.getElementById('border-graphic');
+holder.ondragover = function () {
+  return false;
+};
+holder.ondragleave = holder.ondragend = function () {
+  return false;
+};
+holder.ondrop = function (e) {
+  e.preventDefault();
+  var file = e.dataTransfer.files[0];
+
+  console.log('File you dragged here is', file.path);
+  return false;
+};
+</script>
+<script type="text/javascript" src="js/write_file.js"></script>
+<script type="text/javascript" src="node_modules\bootstrap\js\dropdown.js"></script>
 </html>

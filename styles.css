@@ -27,3 +27,9 @@ body {
 #message-area {
 	margin: 30px;
 }
+
+#encrypt-button-container {
+	text-align: center;
+	margin-top: 20px
+	margin-bottom:20px;
+}
