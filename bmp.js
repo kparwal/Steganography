@@ -62,7 +62,6 @@ function bmp_pack_message(raw, message) {
     packed_pixels[pixel_index + 1] = new_pixel2;
   }
 
-  debugger;
   return raw;
 
 }
@@ -108,16 +107,13 @@ function bmp_unpack_message(image) {
     decoded_message += (g & 1);
     decoded_message += (b & 1);
   }
-
-  debugger;
-
   decoded_message = toStr(decoded_message);
   return decoded_message;
 }
 
 
 function bmp_encode() {
-  
+
 }
 
 function handleFiles(e) {

@@ -7,7 +7,7 @@
   <title>Steganography by MacroHard</title>
 </head>
 <body>
-<h1 id="titlebar">Drop a BMP file</h1>
+  <h1 id="titlebar">Drop a BMP file</h1>
 
 </body>
 <div class="col-6-lg container-fluid">
@@ -37,7 +37,7 @@
   <button type="button" class="btn btn-success" id="encrypt-button">Encrypt!</button>
 </div>
 
-<div class="row">
+<div class="row" id="images">
   <div class="col-md-6 col-sm-12">
     <img id="original"/>
   </div>
@@ -50,53 +50,60 @@
 <script type="text/javascript" src="bmp.js"></script>
 
 <script>
-  var fs = require('fs');
-  var holder = document.getElementById('border-graphic');
-  holder.ondragover = function () {
-    return false;
-  };
-  holder.ondragleave = holder.ondragend = function () {
-    return false;
-  };
-  holder.ondrop = function (e) {
-    e.preventDefault();
-    file = e.dataTransfer.files[0];
+var fs = require('fs');
+var holder = document.getElementById('border-graphic');
+holder.ondragover = function () {
+  return false;
+};
+holder.ondragleave = holder.ondragend = function () {
+  return false;
+};
+holder.ondrop = function (e) {
+  e.preventDefault();
+  file = e.dataTransfer.files[0];
 
-    var original_image = document.getElementById('original').setAttribute('src', file.path);
+  var original_image = document.getElementById('original').setAttribute('src', file.path);
 
-    var button = document.getElementById('encrypt-button');
-    button.addEventListener('click', function () {
+  var button = document.getElementById('encrypt-button');
+  button.addEventListener('click', function () {
 
-          fs.readFile(file.path, function (err, data) {
+    fs.readFile(file.path, function (err, data) {
 
-            if (err) {
-              console.log(err);
-              return;
-            }
+      if (err) {
+        console.log(err);
+        return;
+      }
 
-            var raw;
-            var message = document.getElementById('message').value;
+      var raw;
+      var message = document.getElementById('message').value;
 
-            switch (file.type) {
-              case "image/bmp":
-                raw = bmp_decode(data);
-                image = bmp_pack_message(raw, message);
-                fs.writeFile(file.path.substr(0, file.path.length - 4) + " copy" + ".bmp", image, function (err) {
-                  if (err) {
-                    throw err;
-                  }
-                });
-                recovered_message = bmp_unpack_message(image);
-                bmp_encode();
-                break;
-              default:
-                break;
-            }
-          })
+      switch (file.type) {
+        case "image/bmp":
+        raw = bmp_decode(data);
+        image = bmp_pack_message(raw, message);
+        var start = image.fileheader.bfOffBits;                
+        recovered_message = bmp_unpack_message(image);
+        for (var index = 0; index < image.pixels.length; index++) {
+          data[start + index] = image.pixels[index];
         }
-    );
+        fs.writeFile(file.path.substr(0, file.path.length - 4) + " copy" + ".bmp", data, 'binary', function (err) {
+          if (err) {
+            throw err;
+          }
+        });
+        console.log(recovered_message);
+        break;
+        default:
+        break;
 
-    return false;
-  };
+      }
+      var new_image_node = document.getElementById("output");
+      new_image_node.src = file.path.substr(0, file.path.length - 4) + " copy" + ".bmp";
+    })
+  }
+  );
+
+  return false;
+};
 </script>
 </html>
