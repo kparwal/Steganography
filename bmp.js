@@ -1,22 +1,22 @@
-function binaryToWords(str) {
-  if(str.match(/[10]{8}/g)){
-    var wordFromBinary = str.match(/([10]{8}|\s+)/g).map(function(fromBinary){
-      return String.fromCharCode(parseInt(fromBinary, 2) );
+function toStr(bin_string) {
+  if (bin_string.match(/[10]{8}/g)) {
+    var wordFromBinary = bin_string.match(/([10]{8}|\s+)/g).map(function (fromBinary) {
+      return String.fromCharCode(parseInt(fromBinary, 2));
     }).join('');
-    return console.log(wordFromBinary);
+    return wordFromBinary;
   }
 }
 
-function toBin(str){
-  var i,j,d;
+function toBin(str) {
+  var i, j, d;
   var arr = [];
   var len = str.length;
-  for (i = 1; i<=len; i++){
+  for (i = 1; i <= len; i++) {
     //reverse so its like a stack
-    d = str.charCodeAt(len-i);
+    d = str.charCodeAt(len - i);
     for (j = 0; j < 8; j++) {
-      arr.push(d%2);
-      d = Math.floor(d/2);
+      arr.push(d % 2);
+      d = Math.floor(d / 2);
     }
   }
   //reverse all bits again.
@@ -31,18 +31,64 @@ function bmp_pack_message(raw, message) {
 
   var pixel, a, r, g, b;
   var encoded_message = toBin(message);
-  //while (encoded_message.length > 0) {
-  //
-  //}
+  var packed_pixels = raw.pixels.slice(0);
 
-  for (var i = 0; i < raw.pixels.length; i++) {
+  for (var i = encoded_message.length - 1; i >= 0;) {
     pixel = raw.pixels[i];
+
+    a = (pixel & 0x8) >>> 12;
+    r = (pixel & 0x4) >>> 8;
+    g = (pixel & 0x2) >>> 4;
+    b = (pixel & 0x1) >>> 0;
+
+    a = (a & 0xe) | encoded_message[i];
+    i--;
+    r = (r & 0xe) | encoded_message[i];
+    i--;
+    g = (g & 0xe) | encoded_message[i];
+    i--;
+    b = (b & 0xe) | encoded_message[i];
+    i--;
+
+    pixel = (a << 12) | (r << 8) | (g << 4) | b;
+    raw.pixels[i] = pixel;
+    packed_pixels[i] = pixel;
+
+  }
+
+  debugger;
+  return raw;
+
+}
+
+function bmp_unpack_message(image) {
+
+  var pixel, a, r, g, b;
+  var decoded_message = "";
+
+  for (var i = image.pixels.length; i > 0;) {
+    pixel = image.pixels[i];
+
     a = (pixel & 0xf000) >>> 12;
     r = (pixel & 0x0f00) >>> 8;
     g = (pixel & 0x00f0) >>> 4;
     b = (pixel & 0x000f) >>> 0;
 
+    decoded_message += (a & 1);
+    i--;
+    decoded_message += (r & 1);
+    i--;
+    decoded_message += (g & 1);
+    i--;
+    decoded_message += (b & 1);
+    i--;
+
   }
+
+  debugger;
+
+  decoded_message = toStr(decoded_message);
+  return decoded_message;
 }
 
 
