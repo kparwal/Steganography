@@ -32,11 +32,14 @@
     <textarea class="form-control" rows="5" id="message"></textarea>
   </div>
 </div>
-
-<div id="encrypt-button-container" class="fluid-container">
-  <button type="button" class="btn btn-success" id="encrypt-button">Encrypt!</button>
+<div class="row" id="buttons">
+  <div class="col-md-6 col-sm-12 encrypt-button-container" id="fluid-container">
+    <button type="button" class="btn btn-success" id="encrypt-button">Encrypt!</button>
+  </div>
+  <div class="col-md-6 col-sm-12 decrypt-button-container" id="fluid-container">
+    <button type="button" class="btn btn-success" id="decrypt-button">Decrypt!</button>
+  </div>
 </div>
-
 <div class="row" id="images">
   <div class="col-md-6 col-sm-12">
     <img id="original"/>
@@ -75,7 +78,7 @@ holder.ondrop = function (e) {
       }
 
       var raw;
-      var message = document.getElementById('message').value;
+      var message = document.getElementById('message').value + "&|";
 
       switch (file.type) {
         case "image/bmp":
@@ -102,6 +105,17 @@ holder.ondrop = function (e) {
     })
   }
   );
+  
+  var decrypt_button = document.getElementById('decrypt-button');
+  decrypt_button.addEventListener('click', function() {
+    fs.readFile(file.path, function(err, data) {
+      if (err) console.log(err);
+      var raw = bmp_decode(data);
+      found_message = bmp_unpack_message(raw);
+      var textarea = document.getElementById('message');
+      textarea.value = found_message.split("&|")[0];
+    })
+  });
 
   return false;
 };
