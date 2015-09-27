@@ -32,32 +32,34 @@ function bmp_pack_message(raw, message) {
   var pixel, a, r, g, b;
   var encoded_message = toBin(message);
   var packed_pixels = raw.pixels.slice(0);
-
-  for (var i = encoded_message.length - 1; i >= 0;) {
+  var pixel_index = 0;
+  for (var i = 0; i < encoded_message.length; pixel_index += 2) {
     // a pixel is 16 bits
-    pixel = raw.pixels[i];
+    pixel = raw.pixels[pixel_index];
+    pixel2 = raw.pixels[pixel_index + 1]
+    a = (pixel & 0xf0) >>> 4;
+    r = (pixel & 0x0f) >>> 0;
+    g = (pixel2 & 0xf0) >>> 4;
+    b = (pixel2 & 0x0f) >>> 0;
 
-    a = (pixel & 0xf000) >>> 12;
-    r = (pixel & 0x0f00) >>> 8;
-    g = (pixel & 0x00f0) >>> 4;
-    b = (pixel & 0x000f) >>> 0;
-
-    debugger;
+    // debugger;
 
     // each of these is 4 bits
     a = (a & 0xe) | encoded_message[i];
-    i--;
+    i++;
     r = (r & 0xe) | encoded_message[i];
-    i--;
+    i++;
     g = (g & 0xe) | encoded_message[i];
-    i--;
+    i++;
     b = (b & 0xe) | encoded_message[i];
-    i--;
+    i++;
 
-    pixel = (a << 12) | (r << 8) | (g << 4) | b;
-    raw.pixels[i] = pixel;
-    packed_pixels[i] = pixel;
-
+    new_pixel =  (a << 4) | r;
+    new_pixel2 = (g << 4) | b;
+    raw.pixels[pixel_index] = new_pixel;
+    raw.pixels[pixel_index + 1] = new_pixel2;
+    packed_pixels[pixel_index] = new_pixel;
+    packed_pixels[pixel_index + 1] = new_pixel2;
   }
 
   debugger;
@@ -67,26 +69,44 @@ function bmp_pack_message(raw, message) {
 
 function bmp_unpack_message(image) {
 
-  var pixel, a, r, g, b;
+  var pixel, pixel2, a, r, g, b;
   var decoded_message = "";
 
-  for (var i = image.pixels.length; i > 0;) {
-    pixel = image.pixels[i];
+  // for (var i = image.pixels.length; i > 0;) {
+  //   pixel = image.pixels[i];
 
-    a = (pixel & 0xf000) >>> 12;
-    r = (pixel & 0x0f00) >>> 8;
-    g = (pixel & 0x00f0) >>> 4;
-    b = (pixel & 0x000f) >>> 0;
+  //   a = (pixel & 0xf000) >>> 12;
+  //   r = (pixel & 0x0f00) >>> 8;
+  //   g = (pixel & 0x00f0) >>> 4;
+  //   b = (pixel & 0x000f) >>> 0;
+
+  //   decoded_message += (a & 1);
+  //   i--;
+  //   decoded_message += (r & 1);
+  //   i--;
+  //   decoded_message += (g & 1);
+  //   i--;
+  //   decoded_message += (b & 1);
+  //   i--;
+
+  // }
+
+  var pixel_index = 0;
+  for (var pixel_index = 0; pixel_index < image.pixels.length; pixel_index += 2) {
+    // a pixel is 16 bits
+    pixel = image.pixels[pixel_index];
+    pixel2 = image.pixels[pixel_index + 1]
+    a = (pixel & 0xf0) >>> 4;
+    r = (pixel & 0x0f) >>> 0;
+    g = (pixel2 & 0xf0) >>> 4;
+    b = (pixel2 & 0x0f) >>> 0;
+
+    // debugger;
 
     decoded_message += (a & 1);
-    i--;
     decoded_message += (r & 1);
-    i--;
     decoded_message += (g & 1);
-    i--;
     decoded_message += (b & 1);
-    i--;
-
   }
 
   debugger;
@@ -97,7 +117,7 @@ function bmp_unpack_message(image) {
 
 
 function bmp_encode() {
-
+  
 }
 
 function handleFiles(e) {
