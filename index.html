@@ -37,9 +37,16 @@
   <button type="button" class="btn btn-success" id="encrypt-button">Encrypt!</button>
 </div>
 
-<div>
-  <img id="output">
+<div class="row">
+  <div class="col-md-6 col-sm-12">
+    <img id="original"/>
+  </div>
+
+  <div class="col-md-6 col-sm-12">
+    <img id="output">
+  </div>
 </div>
+
 <script type="text/javascript" src="bmp.js"></script>
 
 <script>
@@ -55,28 +62,38 @@
     e.preventDefault();
     file = e.dataTransfer.files[0];
 
+    var original_image = document.getElementById('original').setAttribute('src', file.path);
+
     var button = document.getElementById('encrypt-button');
-    button.addEventListener('click', fs.readFile(file.path, function (err, data) {
+    button.addEventListener('click', function () {
 
-          if (err) {
-            console.log(err);
-            return;
-          }
+          fs.readFile(file.path, function (err, data) {
 
-          var raw;
-          var message = document.getElementById('message').value;
+            if (err) {
+              console.log(err);
+              return;
+            }
 
-          switch (file.type) {
-            case "image/bmp":
-              raw = bmp_decode(data);
-              image = bmp_pack_message(raw, message);
-              recovered_message = bmp_unpack_message(image);
-              bmp_encode();
-              break;
-            default:
-              break;
-          }
-        })
+            var raw;
+            var message = document.getElementById('message').value;
+
+            switch (file.type) {
+              case "image/bmp":
+                raw = bmp_decode(data);
+                image = bmp_pack_message(raw, message);
+                fs.writeFile(file.path.substr(0, file.path.length - 4) + " copy" + ".bmp", image, function (err) {
+                  if (err) {
+                    throw err;
+                  }
+                });
+                recovered_message = bmp_unpack_message(image);
+                bmp_encode();
+                break;
+              default:
+                break;
+            }
+          })
+        }
     );
 
     return false;

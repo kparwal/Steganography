@@ -34,13 +34,17 @@ function bmp_pack_message(raw, message) {
   var packed_pixels = raw.pixels.slice(0);
 
   for (var i = encoded_message.length - 1; i >= 0;) {
+    // a pixel is 16 bits
     pixel = raw.pixels[i];
 
-    a = (pixel & 0x8) >>> 12;
-    r = (pixel & 0x4) >>> 8;
-    g = (pixel & 0x2) >>> 4;
-    b = (pixel & 0x1) >>> 0;
+    a = (pixel & 0xf000) >>> 12;
+    r = (pixel & 0x0f00) >>> 8;
+    g = (pixel & 0x00f0) >>> 4;
+    b = (pixel & 0x000f) >>> 0;
 
+    debugger;
+
+    // each of these is 4 bits
     a = (a & 0xe) | encoded_message[i];
     i--;
     r = (r & 0xe) | encoded_message[i];
